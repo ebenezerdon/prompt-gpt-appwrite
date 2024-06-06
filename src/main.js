@@ -27,6 +27,12 @@ export default async ({ req, res }) => {
     const completion = response.choices[0].message.content;
     return res.json({ ok: true, completion }, 200);
   } catch (err) {
-    return res.json({ ok: false, error: 'Failed to query model.' }, 500);
+    return res.json(
+      {
+        ok: false,
+        error: err.message,
+      },
+      500
+    );
   }
 };
