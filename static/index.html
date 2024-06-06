@@ -14,15 +14,15 @@
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+        })
 
-        const json = await response.json();
+        const json = await response.json()
 
         if (!json.ok || json.error) {
-          alert(json.error);
+          alert(json.error)
         }
 
-        return json.completion;
+        return json.completion
       }
     </script>
 
@@ -58,7 +58,12 @@
             <div
               class="input-text-wrapper is-with-end-button u-width-full-line"
             >
-              <input x-model="prompt" type="search" placeholder="Question" />
+              <input
+                x-model="prompt"
+                type="search"
+                placeholder="Question"
+                value="Tell me a joke"
+              />
               <div class="icon-search" aria-hidden="true"></div>
             </div>
 
