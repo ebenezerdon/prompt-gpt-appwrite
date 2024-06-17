@@ -1,10 +1,18 @@
 import OpenAI from 'openai'
 import { getStaticFile, throwIfMissing } from './utils.js'
 
-export default async (req, res) => {
+export default async ({ req, res }) => {
   throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
   // Handle GET request
+  if (req.method === 'GET') {
+    return res.send(getStaticFile('index.html'), 200, {
+      'Content-Type': 'text/html; charset=utf-8',
+    })
+  }
+
+  throwIfMissing(process.env, ['OPENAI_API_KEY'])
+
   if (req.method === 'GET') {
     return res.send(getStaticFile('index.html'), 200, {
       'Content-Type': 'text/html; charset=utf-8',
