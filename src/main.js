@@ -39,5 +39,5 @@ export default async ({ req, res }) => {
   }
 
   // Handle unsupported HTTP methods
-  return res.status(405).json({ ok: false, error: 'Method Not Allowed' })
+  return res.json({ ok: false, error: 'Method Not Allowed' }, 405)
 }
