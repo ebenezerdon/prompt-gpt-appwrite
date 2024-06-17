@@ -13,14 +13,7 @@ export default async (req, res) => {
 
   // Handle POST request
   if (req.method === 'POST') {
-    try {
-      throwIfMissing(req.body, ['prompt'])
-    } catch (err) {
-      return res.status(400).json({
-        ok: false,
-        error: 'Missing required fields in request body: prompt',
-      })
-    }
+    throwIfMissing(req.body, ['prompt'])
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
