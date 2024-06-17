@@ -2,14 +2,7 @@ import OpenAI from 'openai'
 import { getStaticFile, throwIfMissing } from './utils.js'
 
 export default async (req, res) => {
-  try {
-    throwIfMissing(process.env, ['OPENAI_API_KEY'])
-  } catch (err) {
-    return res.status(500).json({
-      ok: false,
-      error: 'Missing environment variables: OPENAI_API_KEY',
-    })
-  }
+  throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
   // Handle GET request
   if (req.method === 'GET') {
