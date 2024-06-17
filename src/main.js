@@ -1,32 +1,49 @@
 import OpenAI from 'openai'
 import { getStaticFile, throwIfMissing } from './utils.js'
 
-export default async ({ req, res }) => {
-  throwIfMissing(process.env, ['OPENAI_API_KEY'])
+export default async (req, res) => {
+  try {
+    throwIfMissing(process.env, ['OPENAI_API_KEY'])
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      error: 'Missing environment variables: OPENAI_API_KEY',
+    })
+  }
 
+  // Handle GET request
   if (req.method === 'GET') {
-    return res.send(getStaticFile('index.html'), 200, {
-      'Content-Type': 'text/html; charset=utf-8',
+    return res.status(200).sendFile(getStaticFile('index.html'), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
     })
   }
 
-  try {
-    throwIfMissing(req.body, ['prompt'])
-  } catch (err) {
-    return res.json({ ok: false, error: err.message }, 400)
+  // Handle POST request
+  if (req.method === 'POST') {
+    try {
+      throwIfMissing(req.body, ['prompt'])
+    } catch (err) {
+      return res.status(400).json({
+        ok: false,
+        error: 'Missing required fields in request body: prompt',
+      })
+    }
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        max_tokens: parseInt(process.env.OPENAI_MAX_TOKENS ?? '512'),
+        messages: [{ role: 'user', content: req.body.prompt }],
+      })
+      const completion = response.choices[0].message.content
+      return res.status(200).json({ ok: true, completion })
+    } catch (err) {
+      return res.status(500).json({ ok: false, error: err.message })
+    }
   }
 
-  const openai = new OpenAI()
-
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      max_tokens: parseInt(process.env.OPENAI_MAX_TOKENS ?? '512'),
-      messages: [{ role: 'user', content: req.body.prompt }],
-    })
-    const completion = response.choices[0].message.content
-    return res.json({ ok: true, completion }, 200)
-  } catch (err) {
-    return res.json({ ok: false, error: err.message }, 500)
-  }
+  // Handle unsupported HTTP methods
+  return res.status(405).json({ ok: false, error: 'Method Not Allowed' })
 }
