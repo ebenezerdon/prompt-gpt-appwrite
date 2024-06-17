@@ -4,6 +4,8 @@ import { getStaticFile, throwIfMissing } from './utils.js'
 export default async ({ req, res }) => {
   throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
+  res.headers.append('Access-Control-Allow-Origin', '*')
+
   // Handle GET request
   if (req.method === 'GET') {
     return res.send(getStaticFile('index.html'), 200, {
