@@ -2,17 +2,23 @@ import OpenAI from 'openai'
 import { getStaticFile, throwIfMissing } from './utils.js'
 
 export default async ({ req, res }) => {
-  throwIfMissing(process.env, ['OPENAI_API_KEY'])
+  // Add CORS headers
+  const setCorsHeaders = (res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  }
 
-  // Handle GET request
-  if (req.method === 'GET') {
-    return res.send(getStaticFile('index.html'), 200, {
-      'Content-Type': 'text/html; charset=utf-8',
-    })
+  setCorsHeaders(res)
+
+  // Handle OPTIONS preflight request
+  if (req.method === 'OPTIONS') {
+    return res.send(null, 204)
   }
 
   throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
+  // Handle GET request
   if (req.method === 'GET') {
     return res.send(getStaticFile('index.html'), 200, {
       'Content-Type': 'text/html; charset=utf-8',
