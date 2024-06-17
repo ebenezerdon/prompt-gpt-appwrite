@@ -13,6 +13,14 @@ export default async ({ req, res }) => {
 
   throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
+  if (req.method === 'OPTIONS') {
+    return res.send('', 200, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    })
+  }
+
   if (req.method === 'GET') {
     return res.send(getStaticFile('index.html'), 200, {
       'Content-Type': 'text/html; charset=utf-8',
