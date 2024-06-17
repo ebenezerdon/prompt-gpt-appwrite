@@ -4,8 +4,6 @@ import { getStaticFile, throwIfMissing } from './utils.js'
 export default async ({ req, res }) => {
   throwIfMissing(process.env, ['OPENAI_API_KEY'])
 
-  res.headers.append('Access-Control-Allow-Origin', '*')
-
   // Handle GET request
   if (req.method === 'GET') {
     return res.send(getStaticFile('index.html'), 200, {
@@ -34,12 +32,18 @@ export default async ({ req, res }) => {
         messages: [{ role: 'user', content: req.body.prompt }],
       })
       const completion = response.choices[0].message.content
-      return res.json({ ok: true, completion }, 200)
+      return res.json({ ok: true, completion }, 200, {
+        'Access-Control-Allow-Origin': '*',
+      })
     } catch (err) {
-      return res.json({ ok: false, error: err.message }, 500)
+      return res.json({ ok: false, error: err.message }, 500, {
+        'Access-Control-Allow-Origin': '*',
+      })
     }
   }
 
   // Handle unsupported HTTP methods
-  return res.json({ ok: false, error: 'Method Not Allowed' }, 405)
+  return res.json({ ok: false, error: 'Method Not Allowed' }, 405, {
+    'Access-Control-Allow-Origin': '*',
+  })
 }
