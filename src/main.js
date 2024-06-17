@@ -32,9 +32,9 @@ export default async ({ req, res }) => {
         messages: [{ role: 'user', content: req.body.prompt }],
       })
       const completion = response.choices[0].message.content
-      return res.status(200).json({ ok: true, completion })
+      return res.json({ ok: true, completion }, 200)
     } catch (err) {
-      return res.status(500).json({ ok: false, error: err.message })
+      return res.json({ ok: false, error: err.message }, 500)
     }
   }
 
