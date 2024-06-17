@@ -6,8 +6,8 @@ export default async (req, res) => {
 
   // Handle GET request
   if (req.method === 'GET') {
-    return res.status(200).sendFile(getStaticFile('index.html'), {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    return res.send(getStaticFile('index.html'), 200, {
+      'Content-Type': 'text/html; charset=utf-8',
     })
   }
 
