@@ -40,7 +40,9 @@ export default async ({ req, res }) => {
         messages: [{ role: 'user', content: req.body.prompt }],
       })
       const completion = response.choices[0].message.content
-      return res.json({ ok: true, completion }, 200)
+      return res.json({ ok: true, completion }, 200, {
+        'Access-Control-Allow-Origin': '*',
+      })
     } catch (err) {
       return res.json({ ok: false, error: err.message }, 500, {
         'Access-Control-Allow-Origin': '*',
